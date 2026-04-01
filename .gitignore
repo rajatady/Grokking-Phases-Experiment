@@ -3,3 +3,6 @@ __pycache__/
 *.pth
 .idea/
 .DS_Store
+
+remote.env
+AGENTS.md
