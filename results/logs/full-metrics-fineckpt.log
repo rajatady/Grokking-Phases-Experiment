@@ -1,0 +1,77 @@
+================================================================================
+GROKKING EXPERIMENT WITH FULL METRICS
+================================================================================
+
+Task: a / b mod 97
+Device: cuda
+Train: 4656, Test: 4656
+
+======================================================================
+EXPERIMENT: Grokking (WD=0.3)
+Steps: 30000, LR: 0.0003, Weight Decay: 0.3
+======================================================================
+Step      0: loss=4.7193, train=0.008, test=0.008, gap=0.000 | exit_r=0.200, W_norm=42.4
+Step   2000: loss=0.0813, train=1.000, test=0.016, gap=0.984 | exit_r=0.961, W_norm=41.9
+Step   4000: loss=0.0629, train=0.992, test=0.023, gap=0.969 | exit_r=0.965, W_norm=38.7
+Step   6000: loss=0.0088, train=1.000, test=0.000, gap=1.000 | exit_r=1.007, W_norm=33.0
+Step   8000: loss=0.0075, train=1.000, test=0.039, gap=0.961 | exit_r=0.996, W_norm=31.4
+Step  10000: loss=0.0083, train=1.000, test=0.023, gap=0.977 | exit_r=0.953, W_norm=30.8
+Step  12000: loss=0.0669, train=1.000, test=0.227, gap=0.773 | exit_r=0.987, W_norm=30.9
+Step  14000: loss=0.0071, train=1.000, test=0.258, gap=0.742 | exit_r=0.873, W_norm=26.8
+Step  16000: loss=0.0061, train=1.000, test=0.773, gap=0.227 | exit_r=0.963, W_norm=25.7
+Step  18000: loss=0.0077, train=1.000, test=0.992, gap=0.008 | exit_r=0.987, W_norm=25.2
+Step  20000: loss=0.0042, train=1.000, test=1.000, gap=0.000 | exit_r=0.951, W_norm=22.0
+Step  22000: loss=0.0080, train=1.000, test=1.000, gap=0.000 | exit_r=1.015, W_norm=24.1
+Step  24000: loss=0.0039, train=1.000, test=1.000, gap=0.000 | exit_r=0.999, W_norm=21.4
+Step  26000: loss=0.0055, train=1.000, test=1.000, gap=0.000 | exit_r=1.050, W_norm=25.5
+Step  28000: loss=0.0038, train=1.000, test=1.000, gap=0.000 | exit_r=1.000, W_norm=21.9
+Step  30000: loss=0.0049, train=1.000, test=1.000, gap=0.000 | exit_r=1.044, W_norm=26.5
+
+================================================================================
+GROKKING ANALYSIS
+================================================================================
+
+✓ GROKKING occurred at step 14500!
+
+Metrics BEFORE grokking (step 13500):
+  test_acc: 0.273
+  L3_r: 0.924
+  L3_alpha: -0.867
+  weight_norm: 27.8
+  L3_eff_rank: 78.5
+
+Metrics AFTER grokking (step 14500):
+  test_acc: 0.680
+  L3_r: 0.991
+  L3_alpha: -0.910
+  weight_norm: 28.8
+  L3_eff_rank: 66.1
+
+================================================================================
+CORRELATION WITH TEST ACCURACY
+================================================================================
+
+Metric                     Correlation
+----------------------------------------
+test_loss                       -0.980
+gap                             -0.921
+L1_eff_rank                     -0.921
+L2_eff_rank                     -0.895
+L1_mlp_sparsity                 +0.893
+L0_mlp_sparsity                 +0.892
+L3_eff_rank                     -0.873
+L2_weight_norm                  -0.868
+L1_weight_norm                  -0.863
+L3_mlp_sparsity                 +0.854
+L2_mlp_sparsity                 +0.823
+total_weight_norm               -0.818
+L3_weight_norm                  -0.799
+L3_repr_sim                     +0.795
+L2_repr_sim                     +0.751
+L1_attn_entropy                 +0.705
+L0_r                            -0.694
+L0_attn_entropy                 +0.694
+L0_weight_norm                  -0.677
+L3_dir_pres                     -0.585
+
+Saved: grokking_full_metrics_fineckpt.json, grokking_checkpoints_fineckpt.pt

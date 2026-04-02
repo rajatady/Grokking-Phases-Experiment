@@ -1,0 +1,415 @@
+=== Parallel boundary sweep ===
+Seeds: 42,43,44
+Continuation steps per run: 30000
+Checkpoints: 7000,8000,9000,10000,11000
+Max parallel jobs: 32
+Seed 42: training baseline (blocking)...
+================================================================================
+GROKKING EXPERIMENT WITH FULL METRICS
+================================================================================
+
+Task: a / b mod 97
+Device: cuda
+Seed: 42
+Train: 4656, Test: 4656
+
+======================================================================
+EXPERIMENT: Grokking (WD=0.3)
+Steps: 30000, LR: 0.0003, Weight Decay: 0.3
+======================================================================
+Step      0: loss=4.7808, train=0.008, test=0.016, gap=-0.008 | exit_r=0.203, W_norm=42.4
+Step   2000: loss=0.0718, train=1.000, test=0.023, gap=0.977 | exit_r=0.974, W_norm=41.9
+Step   4000: loss=0.0182, train=1.000, test=0.047, gap=0.953 | exit_r=0.992, W_norm=38.2
+Step   6000: loss=0.0070, train=1.000, test=0.031, gap=0.969 | exit_r=0.931, W_norm=32.6
+Step   8000: loss=0.0080, train=1.000, test=0.031, gap=0.969 | exit_r=0.989, W_norm=31.1
+Step  10000: loss=0.0078, train=1.000, test=0.133, gap=0.867 | exit_r=0.972, W_norm=29.6
+Step  12000: loss=0.0131, train=1.000, test=0.727, gap=0.273 | exit_r=1.006, W_norm=28.7
+Step  14000: loss=0.0056, train=1.000, test=0.938, gap=0.062 | exit_r=0.924, W_norm=25.6
+Step  16000: loss=0.0061, train=1.000, test=0.992, gap=0.008 | exit_r=1.056, W_norm=25.5
+Step  18000: loss=0.0035, train=1.000, test=0.992, gap=0.008 | exit_r=0.950, W_norm=21.6
+Step  20000: loss=4.5211, train=0.023, test=0.008, gap=0.016 | exit_r=0.535, W_norm=22.5
+Step  22000: loss=0.0074, train=1.000, test=1.000, gap=0.000 | exit_r=1.033, W_norm=24.8
+Step  24000: loss=0.0046, train=1.000, test=1.000, gap=0.000 | exit_r=0.949, W_norm=21.3
+Step  26000: loss=0.0073, train=1.000, test=1.000, gap=0.000 | exit_r=0.977, W_norm=26.2
+Step  28000: loss=0.0036, train=1.000, test=1.000, gap=0.000 | exit_r=0.965, W_norm=22.6
+Step  30000: loss=0.0044, train=1.000, test=1.000, gap=0.000 | exit_r=1.031, W_norm=28.3
+
+================================================================================
+GROKKING ANALYSIS
+================================================================================
+
+✓ GROKKING occurred at step 11500!
+
+Metrics BEFORE grokking (step 10500):
+  test_acc: 0.086
+  L3_r: 0.903
+  L3_alpha: -0.856
+  weight_norm: 28.5
+  L3_eff_rank: 82.4
+
+Metrics AFTER grokking (step 11500):
+  test_acc: 0.594
+  L3_r: 1.004
+  L3_alpha: -0.858
+  weight_norm: 29.8
+  L3_eff_rank: 72.8
+
+================================================================================
+CORRELATION WITH TEST ACCURACY
+================================================================================
+
+Metric                     Correlation
+----------------------------------------
+test_loss                       -0.978
+gap                             -0.857
+L1_weight_norm                  -0.831
+L2_weight_norm                  -0.821
+total_weight_norm               -0.792
+L1_eff_rank                     -0.791
+L0_mlp_sparsity                 +0.781
+L3_weight_norm                  -0.775
+L3_mlp_sparsity                 +0.732
+L1_mlp_sparsity                 +0.722
+L1_attn_entropy                 +0.716
+L2_eff_rank                     -0.712
+L2_repr_sim                     +0.702
+L2_mlp_sparsity                 +0.696
+L3_eff_rank                     -0.663
+L0_weight_norm                  -0.655
+L1_repr_sim                     +0.612
+L3_repr_sim                     +0.562
+L3_dir_pres                     -0.526
+L3_attn_entropy                 -0.494
+
+Saved: grokking_full_metrics_seed42.json, grokking_checkpoints_seed42.pt
+Seed 42: baseline done
+  launch: seed=42 ckpt=7000 iv=baseline
+  launch: seed=42 ckpt=7000 iv=no_weight_decay
+  launch: seed=42 ckpt=7000 iv=freeze_head
+  launch: seed=42 ckpt=7000 iv=freeze_embed
+  launch: seed=42 ckpt=7000 iv=freeze_exit_layer
+  launch: seed=42 ckpt=7000 iv=freeze_exit_attn
+  launch: seed=42 ckpt=7000 iv=freeze_exit_mlp
+  launch: seed=42 ckpt=7000 iv=freeze_entry_layer
+  launch: seed=42 ckpt=7000 iv=freeze_middle_layers
+  launch: seed=42 ckpt=7000 iv=freeze_attn_all
+  launch: seed=42 ckpt=7000 iv=freeze_mlp_all
+  launch: seed=42 ckpt=8000 iv=baseline
+  launch: seed=42 ckpt=8000 iv=no_weight_decay
+  launch: seed=42 ckpt=8000 iv=freeze_head
+  launch: seed=42 ckpt=8000 iv=freeze_embed
+  launch: seed=42 ckpt=8000 iv=freeze_exit_layer
+  launch: seed=42 ckpt=8000 iv=freeze_exit_attn
+  launch: seed=42 ckpt=8000 iv=freeze_exit_mlp
+  launch: seed=42 ckpt=8000 iv=freeze_entry_layer
+  launch: seed=42 ckpt=8000 iv=freeze_middle_layers
+  launch: seed=42 ckpt=8000 iv=freeze_attn_all
+  launch: seed=42 ckpt=8000 iv=freeze_mlp_all
+  launch: seed=42 ckpt=9000 iv=baseline
+  launch: seed=42 ckpt=9000 iv=no_weight_decay
+  launch: seed=42 ckpt=9000 iv=freeze_head
+  launch: seed=42 ckpt=9000 iv=freeze_embed
+  launch: seed=42 ckpt=9000 iv=freeze_exit_layer
+  launch: seed=42 ckpt=9000 iv=freeze_exit_attn
+  launch: seed=42 ckpt=9000 iv=freeze_exit_mlp
+  launch: seed=42 ckpt=9000 iv=freeze_entry_layer
+  launch: seed=42 ckpt=9000 iv=freeze_middle_layers
+  launch: seed=42 ckpt=9000 iv=freeze_attn_all
+  launch: seed=42 ckpt=9000 iv=freeze_mlp_all
+  launch: seed=42 ckpt=10000 iv=baseline
+  launch: seed=42 ckpt=10000 iv=no_weight_decay
+  launch: seed=42 ckpt=10000 iv=freeze_head
+  launch: seed=42 ckpt=10000 iv=freeze_embed
+  launch: seed=42 ckpt=10000 iv=freeze_exit_layer
+  launch: seed=42 ckpt=10000 iv=freeze_exit_attn
+  launch: seed=42 ckpt=10000 iv=freeze_exit_mlp
+  launch: seed=42 ckpt=10000 iv=freeze_entry_layer
+  launch: seed=42 ckpt=10000 iv=freeze_middle_layers
+  launch: seed=42 ckpt=10000 iv=freeze_attn_all
+  launch: seed=42 ckpt=10000 iv=freeze_mlp_all
+  launch: seed=42 ckpt=11000 iv=baseline
+  launch: seed=42 ckpt=11000 iv=no_weight_decay
+  launch: seed=42 ckpt=11000 iv=freeze_head
+  launch: seed=42 ckpt=11000 iv=freeze_embed
+  launch: seed=42 ckpt=11000 iv=freeze_exit_layer
+  launch: seed=42 ckpt=11000 iv=freeze_exit_attn
+  launch: seed=42 ckpt=11000 iv=freeze_exit_mlp
+  launch: seed=42 ckpt=11000 iv=freeze_entry_layer
+  launch: seed=42 ckpt=11000 iv=freeze_middle_layers
+  launch: seed=42 ckpt=11000 iv=freeze_attn_all
+  launch: seed=42 ckpt=11000 iv=freeze_mlp_all
+Seed 43: training baseline (blocking)...
+================================================================================
+GROKKING EXPERIMENT WITH FULL METRICS
+================================================================================
+
+Task: a / b mod 97
+Device: cuda
+Seed: 43
+Train: 4656, Test: 4656
+
+======================================================================
+EXPERIMENT: Grokking (WD=0.3)
+Steps: 30000, LR: 0.0003, Weight Decay: 0.3
+======================================================================
+Step      0: loss=4.8323, train=0.008, test=0.008, gap=0.000 | exit_r=0.198, W_norm=42.4
+Step   2000: loss=0.1183, train=0.992, test=0.023, gap=0.969 | exit_r=0.640, W_norm=42.4
+Step   4000: loss=1.8309, train=0.547, test=0.031, gap=0.516 | exit_r=0.576, W_norm=38.1
+Step   6000: loss=0.0094, train=1.000, test=0.023, gap=0.977 | exit_r=0.385, W_norm=33.8
+Step   8000: loss=0.0098, train=1.000, test=0.000, gap=1.000 | exit_r=0.417, W_norm=32.2
+Step  10000: loss=0.0091, train=1.000, test=0.023, gap=0.977 | exit_r=0.455, W_norm=31.4
+Step  12000: loss=0.0133, train=1.000, test=0.164, gap=0.836 | exit_r=0.574, W_norm=30.7
+Step  14000: loss=0.0867, train=0.992, test=0.359, gap=0.633 | exit_r=0.732, W_norm=29.6
+Step  16000: loss=0.0052, train=1.000, test=0.891, gap=0.109 | exit_r=0.609, W_norm=26.6
+Step  18000: loss=0.0176, train=1.000, test=0.977, gap=0.023 | exit_r=0.712, W_norm=26.6
+Step  20000: loss=0.0043, train=1.000, test=0.992, gap=0.008 | exit_r=0.552, W_norm=22.5
+Step  22000: loss=0.0033, train=1.000, test=1.000, gap=0.000 | exit_r=0.746, W_norm=23.3
+Step  24000: loss=0.0021, train=1.000, test=1.000, gap=0.000 | exit_r=0.592, W_norm=19.8
+Step  26000: loss=0.0080, train=1.000, test=1.000, gap=0.000 | exit_r=0.837, W_norm=26.1
+Step  28000: loss=0.0113, train=1.000, test=1.000, gap=0.000 | exit_r=0.900, W_norm=25.9
+Step  30000: loss=0.0032, train=1.000, test=1.000, gap=0.000 | exit_r=0.824, W_norm=23.0
+
+================================================================================
+GROKKING ANALYSIS
+================================================================================
+
+✓ GROKKING occurred at step 15000!
+
+Metrics BEFORE grokking (step 14000):
+  test_acc: 0.359
+  L3_r: 0.732
+  L3_alpha: -0.649
+  weight_norm: 29.6
+  L3_eff_rank: 70.2
+
+Metrics AFTER grokking (step 15000):
+  test_acc: 0.688
+  L3_r: 0.686
+  L3_alpha: -0.619
+  weight_norm: 28.9
+  L3_eff_rank: 66.7
+
+================================================================================
+CORRELATION WITH TEST ACCURACY
+================================================================================
+
+Metric                     Correlation
+----------------------------------------
+test_loss                       -0.977
+gap                             -0.887
+L1_eff_rank                     -0.886
+L1_mlp_sparsity                 +0.879
+L2_weight_norm                  -0.877
+L1_weight_norm                  -0.870
+L0_mlp_sparsity                 +0.860
+L3_mlp_sparsity                 +0.854
+L2_eff_rank                     -0.847
+total_weight_norm               -0.844
+L3_eff_rank                     -0.837
+L3_weight_norm                  -0.820
+L1_attn_entropy                 +0.801
+L2_mlp_sparsity                 +0.792
+L0_weight_norm                  -0.775
+L0_dir_pres                     +0.718
+L3_alpha                        -0.712
+L2_dir_pres                     -0.703
+L2_r                            +0.699
+L3_r                            +0.652
+
+Saved: grokking_full_metrics_seed43.json, grokking_checkpoints_seed43.pt
+Seed 43: baseline done
+  launch: seed=43 ckpt=7000 iv=baseline
+  launch: seed=43 ckpt=7000 iv=no_weight_decay
+  launch: seed=43 ckpt=7000 iv=freeze_head
+  launch: seed=43 ckpt=7000 iv=freeze_embed
+  launch: seed=43 ckpt=7000 iv=freeze_exit_layer
+  launch: seed=43 ckpt=7000 iv=freeze_exit_attn
+  launch: seed=43 ckpt=7000 iv=freeze_exit_mlp
+  launch: seed=43 ckpt=7000 iv=freeze_entry_layer
+  launch: seed=43 ckpt=7000 iv=freeze_middle_layers
+  launch: seed=43 ckpt=7000 iv=freeze_attn_all
+  launch: seed=43 ckpt=7000 iv=freeze_mlp_all
+  launch: seed=43 ckpt=8000 iv=baseline
+  launch: seed=43 ckpt=8000 iv=no_weight_decay
+  launch: seed=43 ckpt=8000 iv=freeze_head
+  launch: seed=43 ckpt=8000 iv=freeze_embed
+  launch: seed=43 ckpt=8000 iv=freeze_exit_layer
+  launch: seed=43 ckpt=8000 iv=freeze_exit_attn
+  launch: seed=43 ckpt=8000 iv=freeze_exit_mlp
+  launch: seed=43 ckpt=8000 iv=freeze_entry_layer
+  launch: seed=43 ckpt=8000 iv=freeze_middle_layers
+  launch: seed=43 ckpt=8000 iv=freeze_attn_all
+  launch: seed=43 ckpt=8000 iv=freeze_mlp_all
+  launch: seed=43 ckpt=9000 iv=baseline
+  launch: seed=43 ckpt=9000 iv=no_weight_decay
+  launch: seed=43 ckpt=9000 iv=freeze_head
+  launch: seed=43 ckpt=9000 iv=freeze_embed
+  launch: seed=43 ckpt=9000 iv=freeze_exit_layer
+  launch: seed=43 ckpt=9000 iv=freeze_exit_attn
+  launch: seed=43 ckpt=9000 iv=freeze_exit_mlp
+  launch: seed=43 ckpt=9000 iv=freeze_entry_layer
+  launch: seed=43 ckpt=9000 iv=freeze_middle_layers
+  launch: seed=43 ckpt=9000 iv=freeze_attn_all
+  launch: seed=43 ckpt=9000 iv=freeze_mlp_all
+  launch: seed=43 ckpt=10000 iv=baseline
+  launch: seed=43 ckpt=10000 iv=no_weight_decay
+  launch: seed=43 ckpt=10000 iv=freeze_head
+  launch: seed=43 ckpt=10000 iv=freeze_embed
+  launch: seed=43 ckpt=10000 iv=freeze_exit_layer
+  launch: seed=43 ckpt=10000 iv=freeze_exit_attn
+  launch: seed=43 ckpt=10000 iv=freeze_exit_mlp
+  launch: seed=43 ckpt=10000 iv=freeze_entry_layer
+  launch: seed=43 ckpt=10000 iv=freeze_middle_layers
+  launch: seed=43 ckpt=10000 iv=freeze_attn_all
+  launch: seed=43 ckpt=10000 iv=freeze_mlp_all
+  launch: seed=43 ckpt=11000 iv=baseline
+  launch: seed=43 ckpt=11000 iv=no_weight_decay
+  launch: seed=43 ckpt=11000 iv=freeze_head
+  launch: seed=43 ckpt=11000 iv=freeze_embed
+  launch: seed=43 ckpt=11000 iv=freeze_exit_layer
+  launch: seed=43 ckpt=11000 iv=freeze_exit_attn
+  launch: seed=43 ckpt=11000 iv=freeze_exit_mlp
+  launch: seed=43 ckpt=11000 iv=freeze_entry_layer
+  launch: seed=43 ckpt=11000 iv=freeze_middle_layers
+  launch: seed=43 ckpt=11000 iv=freeze_attn_all
+  launch: seed=43 ckpt=11000 iv=freeze_mlp_all
+Seed 44: training baseline (blocking)...
+================================================================================
+GROKKING EXPERIMENT WITH FULL METRICS
+================================================================================
+
+Task: a / b mod 97
+Device: cuda
+Seed: 44
+Train: 4656, Test: 4656
+
+======================================================================
+EXPERIMENT: Grokking (WD=0.3)
+Steps: 30000, LR: 0.0003, Weight Decay: 0.3
+======================================================================
+Step      0: loss=4.7124, train=0.008, test=0.008, gap=0.000 | exit_r=0.163, W_norm=42.4
+Step   2000: loss=0.0826, train=1.000, test=0.023, gap=0.977 | exit_r=0.994, W_norm=42.4
+Step   4000: loss=0.0143, train=1.000, test=0.031, gap=0.969 | exit_r=1.021, W_norm=38.6
+Step   6000: loss=0.2140, train=0.961, test=0.031, gap=0.930 | exit_r=0.887, W_norm=36.3
+Step   8000: loss=0.0079, train=1.000, test=0.016, gap=0.984 | exit_r=1.022, W_norm=31.2
+Step  10000: loss=0.0078, train=1.000, test=0.023, gap=0.977 | exit_r=1.031, W_norm=30.5
+Step  12000: loss=0.0086, train=1.000, test=0.070, gap=0.930 | exit_r=1.011, W_norm=30.5
+Step  14000: loss=0.0258, train=1.000, test=0.188, gap=0.812 | exit_r=0.995, W_norm=30.3
+Step  16000: loss=0.0420, train=1.000, test=0.531, gap=0.469 | exit_r=0.942, W_norm=29.2
+Step  18000: loss=1.7697, train=0.523, test=0.227, gap=0.297 | exit_r=0.909, W_norm=25.2
+Step  20000: loss=0.0043, train=1.000, test=0.953, gap=0.047 | exit_r=0.992, W_norm=24.2
+Step  22000: loss=0.0046, train=1.000, test=1.000, gap=0.000 | exit_r=1.011, W_norm=24.3
+Step  24000: loss=0.0066, train=1.000, test=1.000, gap=0.000 | exit_r=1.027, W_norm=26.0
+Step  26000: loss=0.0267, train=0.992, test=1.000, gap=-0.008 | exit_r=1.010, W_norm=26.7
+Step  28000: loss=0.0032, train=1.000, test=1.000, gap=0.000 | exit_r=0.996, W_norm=22.7
+Step  30000: loss=0.0076, train=1.000, test=0.984, gap=0.016 | exit_r=0.989, W_norm=27.9
+
+================================================================================
+GROKKING ANALYSIS
+================================================================================
+
+✓ GROKKING occurred at step 16000!
+
+Metrics BEFORE grokking (step 15000):
+  test_acc: 0.219
+  L3_r: 0.994
+  L3_alpha: -0.972
+  weight_norm: 28.0
+  L3_eff_rank: 78.9
+
+Metrics AFTER grokking (step 16000):
+  test_acc: 0.531
+  L3_r: 0.942
+  L3_alpha: -0.930
+  weight_norm: 29.2
+  L3_eff_rank: 69.7
+
+================================================================================
+CORRELATION WITH TEST ACCURACY
+================================================================================
+
+Metric                     Correlation
+----------------------------------------
+test_loss                       -0.969
+L0_mlp_sparsity                 +0.926
+L1_mlp_sparsity                 +0.922
+gap                             -0.892
+L1_eff_rank                     -0.890
+L2_eff_rank                     -0.860
+L3_mlp_sparsity                 +0.853
+L2_weight_norm                  -0.842
+L3_eff_rank                     -0.841
+L2_mlp_sparsity                 +0.828
+L1_weight_norm                  -0.811
+L2_repr_sim                     +0.799
+L1_dir_pres                     +0.774
+total_weight_norm               -0.774
+L1_attn_entropy                 +0.761
+L3_repr_sim                     +0.741
+L3_weight_norm                  -0.734
+L1_repr_sim                     +0.725
+L0_dir_pres                     +0.715
+L0_r                            -0.685
+
+Saved: grokking_full_metrics_seed44.json, grokking_checkpoints_seed44.pt
+Seed 44: baseline done
+  launch: seed=44 ckpt=7000 iv=baseline
+  launch: seed=44 ckpt=7000 iv=no_weight_decay
+  launch: seed=44 ckpt=7000 iv=freeze_head
+  launch: seed=44 ckpt=7000 iv=freeze_embed
+  launch: seed=44 ckpt=7000 iv=freeze_exit_layer
+  launch: seed=44 ckpt=7000 iv=freeze_exit_attn
+  launch: seed=44 ckpt=7000 iv=freeze_exit_mlp
+  launch: seed=44 ckpt=7000 iv=freeze_entry_layer
+  launch: seed=44 ckpt=7000 iv=freeze_middle_layers
+  launch: seed=44 ckpt=7000 iv=freeze_attn_all
+  launch: seed=44 ckpt=7000 iv=freeze_mlp_all
+  launch: seed=44 ckpt=8000 iv=baseline
+  launch: seed=44 ckpt=8000 iv=no_weight_decay
+  launch: seed=44 ckpt=8000 iv=freeze_head
+  launch: seed=44 ckpt=8000 iv=freeze_embed
+  launch: seed=44 ckpt=8000 iv=freeze_exit_layer
+  launch: seed=44 ckpt=8000 iv=freeze_exit_attn
+  launch: seed=44 ckpt=8000 iv=freeze_exit_mlp
+  launch: seed=44 ckpt=8000 iv=freeze_entry_layer
+  launch: seed=44 ckpt=8000 iv=freeze_middle_layers
+  launch: seed=44 ckpt=8000 iv=freeze_attn_all
+  launch: seed=44 ckpt=8000 iv=freeze_mlp_all
+  launch: seed=44 ckpt=9000 iv=baseline
+  launch: seed=44 ckpt=9000 iv=no_weight_decay
+  launch: seed=44 ckpt=9000 iv=freeze_head
+  launch: seed=44 ckpt=9000 iv=freeze_embed
+  launch: seed=44 ckpt=9000 iv=freeze_exit_layer
+  launch: seed=44 ckpt=9000 iv=freeze_exit_attn
+  launch: seed=44 ckpt=9000 iv=freeze_exit_mlp
+  launch: seed=44 ckpt=9000 iv=freeze_entry_layer
+  launch: seed=44 ckpt=9000 iv=freeze_middle_layers
+  launch: seed=44 ckpt=9000 iv=freeze_attn_all
+  launch: seed=44 ckpt=9000 iv=freeze_mlp_all
+  launch: seed=44 ckpt=10000 iv=baseline
+  launch: seed=44 ckpt=10000 iv=no_weight_decay
+  launch: seed=44 ckpt=10000 iv=freeze_head
+  launch: seed=44 ckpt=10000 iv=freeze_embed
+  launch: seed=44 ckpt=10000 iv=freeze_exit_layer
+  launch: seed=44 ckpt=10000 iv=freeze_exit_attn
+  launch: seed=44 ckpt=10000 iv=freeze_exit_mlp
+  launch: seed=44 ckpt=10000 iv=freeze_entry_layer
+  launch: seed=44 ckpt=10000 iv=freeze_middle_layers
+  launch: seed=44 ckpt=10000 iv=freeze_attn_all
+  launch: seed=44 ckpt=10000 iv=freeze_mlp_all
+  launch: seed=44 ckpt=11000 iv=baseline
+  launch: seed=44 ckpt=11000 iv=no_weight_decay
+  launch: seed=44 ckpt=11000 iv=freeze_head
+  launch: seed=44 ckpt=11000 iv=freeze_embed
+  launch: seed=44 ckpt=11000 iv=freeze_exit_layer
+  launch: seed=44 ckpt=11000 iv=freeze_exit_attn
+  launch: seed=44 ckpt=11000 iv=freeze_exit_mlp
+  launch: seed=44 ckpt=11000 iv=freeze_entry_layer
+  launch: seed=44 ckpt=11000 iv=freeze_middle_layers
+  launch: seed=44 ckpt=11000 iv=freeze_attn_all
+  launch: seed=44 ckpt=11000 iv=freeze_mlp_all
+Waiting for 31 remaining jobs...
+
+=== All runs complete. Merging results... ===
+Saved boundary_sweep_summary.csv and boundary_sweep_summary.md
+=== Done. Summary in boundary_sweep_summary.csv / .md ===

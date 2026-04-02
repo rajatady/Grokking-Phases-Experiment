@@ -1,0 +1,50 @@
+Using device: cuda
+======================================================================
+ABLATION STUDY: Finding minimal intervention that affects learning
+======================================================================
+Seed: 44
+
+======================================================================
+STARTING FROM CHECKPOINT: Step 9000
+======================================================================
+
+  freeze_middle_layers:
+/workspace/grokking-phases/grokking_ablation.py:201: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  all_ckpts = torch.load(checkpoint_path, map_location=DEVICE)
+    [trainable: 424,192/820,736] Training 30000 steps...
+      Step 9000: train=1.000, test=0.016
+      Step 11000: train=1.000, test=0.016
+      Step 13000: train=1.000, test=0.016
+      Step 15000: train=1.000, test=0.020
+      Step 17000: train=1.000, test=0.023
+      Step 19000: train=1.000, test=0.020
+      Step 21000: train=1.000, test=0.035
+      Step 23000: train=1.000, test=0.039
+      Step 25000: train=1.000, test=0.035
+      Step 27000: train=1.000, test=0.043
+      Step 29000: train=1.000, test=0.039
+      Step 31000: train=1.000, test=0.039
+      Step 33000: train=1.000, test=0.055
+      Step 35000: train=1.000, test=0.090
+      Step 37000: train=1.000, test=0.078
+    → 0.016 → 0.121 (Δ=+0.105) [SLOW_RISE]
+
+======================================================================
+FINAL COMPARISON TABLE
+======================================================================
+
+Intervention           Ckpt 7000                      Ckpt 11000                    
+                       init→final (Δ) [trend]         init→final (Δ) [trend]        
+----------------------------------------------------------------------------------
+freeze_middle_layers   N/A                            N/A                           
+
+======================================================================
+BASELINE COMPARISON: Step 7000 vs Step 11000
+======================================================================
+Traceback (most recent call last):
+  File "/workspace/grokking-phases/grokking_ablation.py", line 410, in <module>
+    main()
+  File "/workspace/grokking-phases/grokking_ablation.py", line 378, in main
+    baseline_7k = [r for r in all_results if r['intervention'] == 'baseline' and r['checkpoint'] == 7000][0]
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range

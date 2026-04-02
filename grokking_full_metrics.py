@@ -15,16 +15,27 @@ Additional metrics to track:
 Run for 50k steps with higher weight decay to trigger grokking.
 """
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
+import argparse
 import json
 from pathlib import Path
 import copy
 from collections import defaultdict
 
-DEVICE = 'mps' if torch.backends.mps.is_available() else 'cpu'
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+
+def get_device():
+    if torch.cuda.is_available():
+        return 'cuda'
+    if torch.backends.mps.is_available():
+        return 'mps'
+    return 'cpu'
+
+
+DEVICE = get_device()
 
 P = 97
 TRAIN_FRAC = 0.5
@@ -312,8 +323,9 @@ def run_grokking_experiment(name, model, train_data, test_data, num_steps=50000,
                       f"exit_r={metrics['per_layer'][exit_l]['r']:.3f}, "
                       f"W_norm={metrics['total_weight_norm']:.1f}")
 
-            # Save checkpoint
-            if step % 5000 == 0:
+            # Save checkpoints at the same cadence as metric collection so ablations
+            # can start from intermediate plateaus like 7K and 11K.
+            if step % checkpoint_every == 0:
                 checkpoints[step] = {
                     'model_state': copy.deepcopy(model.state_dict()),
                     'metrics': metrics,
@@ -332,25 +344,39 @@ def run_grokking_experiment(name, model, train_data, test_data, num_steps=50000,
     return dict(history), checkpoints
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Train the grokking baseline and save checkpoints/metrics.")
+    parser.add_argument("--num-steps", type=int, default=30000)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--metrics-output", default="grokking_full_metrics.json")
+    parser.add_argument("--checkpoints-output", default="grokking_checkpoints.pt")
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
     print("="*80)
     print("GROKKING EXPERIMENT WITH FULL METRICS")
     print("="*80)
     print(f"\nTask: a / b mod {P}")
     print(f"Device: {DEVICE}")
+    print(f"Seed: {args.seed}")
 
-    train_data = ModularDivisionDataset(P, train=True)
-    test_data = ModularDivisionDataset(P, train=False)
+    train_data = ModularDivisionDataset(P, train=True, seed=args.seed)
+    test_data = ModularDivisionDataset(P, train=False, seed=args.seed)
     print(f"Train: {len(train_data)}, Test: {len(test_data)}")
 
     # Use smaller model (4 layers) and high weight decay for faster grokking
-    torch.manual_seed(42)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
     model = SimpleTransformer(num_layers=4).to(DEVICE)
 
     history, checkpoints = run_grokking_experiment(
         "Grokking (WD=0.3)",
         model, train_data, test_data,
-        num_steps=30000,
+        num_steps=args.num_steps,
         weight_decay=0.3,  # Moderate weight decay - more stable
         lr=3e-4,  # Lower learning rate for stability
     )
@@ -417,17 +443,18 @@ def main():
 
     # Save
     results = {
+        'seed': args.seed,
         'history': history,
         'grok_step': grok_step,
         'correlations': correlations,
     }
 
-    with open('grokking_full_metrics.json', 'w') as f:
+    with open(args.metrics_output, 'w') as f:
         json.dump(results, f, indent=2)
 
-    torch.save(checkpoints, 'grokking_checkpoints.pt')
+    torch.save(checkpoints, args.checkpoints_output)
 
-    print("\nSaved: grokking_full_metrics.json, grokking_checkpoints.pt")
+    print(f"\nSaved: {args.metrics_output}, {args.checkpoints_output}")
 
 
 if __name__ == "__main__":

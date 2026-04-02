@@ -7,16 +7,25 @@ tracking how test accuracy evolves.
 Key question: Which interventions affect the test accuracy trajectory?
 """
 
+import argparse
+import json
+from pathlib import Path
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-import json
-import os
-import sys
-from copy import deepcopy
 
-DEVICE = 'mps' if torch.backends.mps.is_available() else 'cpu'
+
+def get_device():
+    if torch.cuda.is_available():
+        return 'cuda'
+    if torch.backends.mps.is_available():
+        return 'mps'
+    return 'cpu'
+
+
+DEVICE = get_device()
 print(f"Using device: {DEVICE}", flush=True)
 P = 97
 
@@ -172,11 +181,24 @@ def classify_trend(trajectory):
     return trend, improvement
 
 
-def run_ablation(checkpoint_step, intervention_name, num_steps=10000, wd=0.3):
+def parse_int_list(raw_value):
+    return [int(part.strip()) for part in raw_value.split(",") if part.strip()]
+
+
+def parse_str_list(raw_value):
+    return [part.strip() for part in raw_value.split(",") if part.strip()]
+
+
+def save_results(path, results):
+    with open(path, 'w') as f:
+        json.dump(results, f, indent=2)
+
+
+def run_ablation(checkpoint_step, intervention_name, checkpoint_path, seed, num_steps=10000, wd=0.3):
     """Run training with a specific intervention."""
 
     # Load from consolidated checkpoint file (saved by grokking_full_metrics.py)
-    all_ckpts = torch.load('grokking_checkpoints.pt', map_location=DEVICE)
+    all_ckpts = torch.load(checkpoint_path, map_location=DEVICE)
     if checkpoint_step not in all_ckpts:
         raise ValueError(f"Checkpoint {checkpoint_step} not found. Available: {sorted(all_ckpts.keys())}")
     ckpt = all_ckpts[checkpoint_step]
@@ -195,8 +217,13 @@ def run_ablation(checkpoint_step, intervention_name, num_steps=10000, wd=0.3):
         weight_decay=actual_wd
     )
 
-    train_data = ModularDivisionDataset(P, train=True)
-    test_data = ModularDivisionDataset(P, train=False)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    train_data = ModularDivisionDataset(P, train=True, seed=seed)
+    test_data = ModularDivisionDataset(P, train=False, seed=seed)
     x_test, y_test = test_data.get_batch(256)
 
     trajectory = []
@@ -241,6 +268,7 @@ def run_ablation(checkpoint_step, intervention_name, num_steps=10000, wd=0.3):
     print(f"    → {initial_acc:.3f} → {final_acc:.3f} (Δ={improvement:+.3f}) [{trend}]", flush=True)
 
     return {
+        'seed': seed,
         'intervention': intervention_name,
         'checkpoint': checkpoint_step,
         'trainable_params': trainable,
@@ -254,28 +282,45 @@ def run_ablation(checkpoint_step, intervention_name, num_steps=10000, wd=0.3):
     }
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Run grokking component ablations from saved checkpoints.")
+    parser.add_argument("--checkpoint-path", default="grokking_checkpoints.pt")
+    parser.add_argument("--output", default="ablation_results.json")
+    parser.add_argument("--num-steps", type=int, default=10000)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--weight-decay", type=float, default=0.3)
+    parser.add_argument(
+        "--checkpoints",
+        default="7000,11000",
+        help="Comma-separated checkpoint steps to evaluate, for example 7000,8000,9000,10000,11000",
+    )
+    parser.add_argument(
+        "--interventions",
+        default="baseline,no_weight_decay,freeze_head,freeze_embed,freeze_exit_layer,freeze_exit_attn,freeze_exit_mlp,freeze_entry_layer,freeze_middle_layers,freeze_attn_all,freeze_mlp_all",
+        help="Comma-separated intervention names to run",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
     print("=" * 70)
     print("ABLATION STUDY: Finding minimal intervention that affects learning")
     print("=" * 70)
+    print(f"Seed: {args.seed}")
 
-    checkpoints = [7000, 11000]
+    checkpoints = parse_int_list(args.checkpoints)
+    interventions = parse_str_list(args.interventions)
 
-    interventions = [
-        'baseline',
-        'no_weight_decay',
-        'freeze_head',
-        'freeze_embed',
-        'freeze_exit_layer',
-        'freeze_exit_attn',
-        'freeze_exit_mlp',
-        'freeze_entry_layer',
-        'freeze_middle_layers',
-        'freeze_attn_all',
-        'freeze_mlp_all',
-    ]
+    output_path = Path(args.output)
+    if output_path.exists():
+        with open(output_path) as f:
+            all_results = json.load(f)
+        print(f"Resuming from {args.output} with {len(all_results)} completed runs")
+    else:
+        all_results = []
 
-    all_results = []
+    completed = {(row['checkpoint'], row['intervention']) for row in all_results}
 
     for ckpt in checkpoints:
         print(f"\n{'='*70}")
@@ -283,9 +328,20 @@ def main():
         print("=" * 70)
 
         for intervention in interventions:
+            if (ckpt, intervention) in completed:
+                print(f"\n  {intervention}: already completed, skipping", flush=True)
+                continue
             print(f"\n  {intervention}:", flush=True)
-            result = run_ablation(ckpt, intervention, num_steps=10000)
+            result = run_ablation(
+                ckpt,
+                intervention,
+                checkpoint_path=args.checkpoint_path,
+                seed=args.seed,
+                num_steps=args.num_steps,
+                wd=args.weight_decay,
+            )
             all_results.append(result)
+            save_results(args.output, all_results)
 
     # Final comparison table
     print("\n" + "=" * 70)
@@ -347,10 +403,7 @@ def main():
                 print(f"  - {intervention}: 7k={r7k[0]['final_test_acc']:.2f}, 11k={r11k[0]['final_test_acc']:.2f}")
 
     # Save results
-    with open('ablation_results.json', 'w') as f:
-        json.dump(all_results, f, indent=2)
-
-    print("\nResults saved to ablation_results.json")
+    print(f"\nResults saved to {args.output}")
 
 
 if __name__ == "__main__":
